@@ -110,7 +110,7 @@ export const InvoiceDocument: React.FC<InvoiceDocumentProps> = ({ interactive = 
           <div className="meta-field">
             <span className="meta-label">A/c</span>
             <span
-              style={{ minWidth: 320, borderBottom: '1px dashed #777', display: 'inline-block' }}
+              className="meta-val-address"
               contentEditable={interactive}
               suppressContentEditableWarning
               onBlur={(e) => handleBlur('clientAddress', e)}

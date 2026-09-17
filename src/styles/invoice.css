@@ -140,7 +140,14 @@
   font-weight: bold;
   color: var(--ink-blue);
   min-width: 320px;
-  border-bottom: 1px dashed #777;
+  padding-bottom: 1px;
+}
+
+.meta-val-address {
+  font-size: 14px;
+  color: var(--ink-black);
+  min-width: 320px;
+  display: inline-block;
   padding-bottom: 1px;
 }
 
