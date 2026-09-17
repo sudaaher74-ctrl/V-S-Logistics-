@@ -1,0 +1,783 @@
+/* =========================================================
+   PIXEL-PERFECT EXECUTIVE SIDEBAR TRANSPORT INVOICE CSS
+   Matches the newly provided Executive reference mockup for V S LOGISTICS
+   Full A4 layout (794px x 1123px) with left dark navy sidebar
+   ========================================================= */
+
+.executive-invoice-root {
+  width: 794px !important;
+  min-width: 794px !important;
+  max-width: 794px !important;
+  height: 1123px !important;
+  min-height: 1123px !important;
+  max-height: 1123px !important;
+  box-sizing: border-box !important;
+  background-color: #ffffff !important;
+  color: #0b1a30 !important;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.executive-invoice-root [contenteditable="true"]:hover {
+  outline: 1px dashed rgba(217, 4, 41, 0.4);
+  background-color: rgba(254, 242, 242, 0.5);
+  border-radius: 2px;
+  cursor: text;
+}
+.executive-invoice-root [contenteditable="true"]:focus {
+  outline: 2px solid #d90429;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+
+/* =========================================================
+   1. TOP HEADER BANNER
+   ========================================================= */
+.exec-header-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 122px;
+  border-bottom: 2px solid #e2e8f0;
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.exec-brand-box {
+  padding: 10px 14px 6px 18px;
+  flex: 1.15;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.exec-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exec-monogram-svg {
+  width: 58px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.exec-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.exec-company-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  margin: 0;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+}
+
+.exec-company-title .red-title {
+  color: #d90429;
+}
+
+.exec-company-title .navy-title {
+  color: #0b223d;
+}
+
+.exec-company-sub {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #0b223d;
+  letter-spacing: 0.5px;
+  margin: 3px 0 2px 0;
+  text-transform: uppercase;
+}
+
+.exec-safely-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 1px;
+}
+
+.exec-red-dash {
+  height: 1.5px;
+  width: 18px;
+  background: #d90429;
+  display: inline-block;
+}
+
+.exec-safely-text {
+  font-size: 8px;
+  font-weight: 800;
+  color: #0b223d;
+  letter-spacing: 0.8px;
+}
+
+/* Center Slogan & Badge Cluster */
+.exec-header-center {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.exec-cargo-title {
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.exec-cargo-title .cargo-navy {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0b223d;
+  display: block;
+}
+
+.exec-cargo-title .cargo-red {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  color: #d90429;
+  display: block;
+}
+
+.exec-badge-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exec-badge-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  color: #0b223d;
+}
+
+.badge-circle-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0b223d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Right Slanted Truck Hero */
+.exec-slanted-hero {
+  width: 260px;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background: #0b223d;
+  clip-path: polygon(15% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.exec-truck-frame {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.exec-truck-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;
+  display: block;
+}
+
+.exec-corner-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #d90429;
+  color: #ffffff;
+  padding: 5px 12px 5px 16px;
+  font-size: 7.5px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-align: center;
+  clip-path: polygon(18% 0, 100% 0, 100% 100%, 0 100%);
+  line-height: 1.1;
+  z-index: 3;
+}
+
+.exec-badge-underline {
+  width: 20px;
+  height: 2px;
+  background: #ffffff;
+  margin: 3px auto 0 auto;
+}
+
+/* =========================================================
+   2. BODY WRAPPER (SIDEBAR + MAIN CONTENT)
+   ========================================================= */
+.exec-body-wrapper {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+}
+
+/* Left Dark Navy Sidebar */
+.exec-sidebar {
+  width: 165px;
+  min-width: 165px;
+  background: #0d213a;
+  color: #ffffff;
+  padding: 14px 12px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.invoice-num-block {
+  margin-bottom: 12px;
+}
+
+.side-inv-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7dd3fc;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  display: block;
+}
+
+.side-inv-number {
+  font-size: 32px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.05;
+  letter-spacing: -0.5px;
+  margin-top: 2px;
+}
+
+.side-meta-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.side-icon-wrap {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.side-meta-lbl {
+  font-size: 9.5px;
+  color: #94a3b8;
+  font-weight: 600;
+  display: block;
+}
+
+.side-meta-val {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 1px;
+}
+
+.exec-side-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.15);
+  margin: 8px 0 10px 0;
+}
+
+.side-client-block {
+  margin-bottom: auto;
+}
+
+.side-client-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.side-client-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.side-client-address {
+  font-size: 9.5px;
+  color: #94a3b8;
+  line-height: 1.35;
+}
+
+.exec-side-bottom-art {
+  margin-top: 10px;
+  position: relative;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.side-world-map-svg {
+  width: 100%;
+  height: 38px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.side-motto-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 8px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.6px;
+  line-height: 1.15;
+}
+
+.side-motto-dash {
+  width: 22px;
+  height: 2px;
+  background: #d90429;
+  margin-top: 3px;
+}
+
+.side-road-svg {
+  width: 100%;
+  height: 38px;
+  display: block;
+  margin-top: 4px;
+}
+
+/* Right Main Content Area */
+.exec-main-content {
+  flex: 1;
+  padding: 10px 14px 8px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+/* Contact Pills */
+.exec-contact-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.exec-contact-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #1e293b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 3px 8px;
+}
+
+.pill-icon-circle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0b223d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exec-contact-pill.address-pill {
+  max-width: 100%;
+}
+
+/* Line Items Table */
+.exec-table-wrap {
+  margin-bottom: 6px;
+}
+
+.exec-grid-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #cbd5e1;
+  table-layout: fixed;
+}
+
+.exec-grid-table th {
+  background: #0b223d;
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 7px 5px;
+  border: 1px solid #0b223d;
+  letter-spacing: 0.2px;
+}
+
+.exec-grid-table td {
+  padding: 6px 6px;
+  font-size: 11px;
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  height: 28px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.exec-grid-table .row-even {
+  background-color: #ffffff;
+}
+
+.exec-grid-table .row-alt {
+  background-color: #f4f8fb;
+}
+
+.filler-row td {
+  height: 26px;
+}
+
+/* Words & Totals Summary */
+.exec-summary-wrap {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.exec-words-card {
+  flex: 1;
+  background: #fff1f2;
+  border: 1px solid #ffe4e6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rupee-round-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #d90429;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exec-words-content {
+  flex: 1;
+}
+
+.exec-words-lbl {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.exec-words-val {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #0b223d;
+  line-height: 1.25;
+}
+
+.exec-totals-box {
+  width: 220px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.exec-total-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #cbd5e1;
+  font-size: 11px;
+}
+
+.exec-total-row:last-child {
+  border-bottom: none;
+}
+
+.exec-total-lbl {
+  width: 80px;
+  padding: 5px 8px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.exec-total-val {
+  flex: 1;
+  padding: 5px 10px;
+  text-align: right;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.total-header-row .exec-total-lbl {
+  background: #0b223d;
+  color: #ffffff;
+}
+.total-header-row .exec-total-val {
+  background: #f4f8fb;
+  color: #0b223d;
+}
+
+.advance-header-row .exec-total-lbl {
+  background: #0b223d;
+  color: #ffffff;
+}
+.advance-header-row .exec-total-val {
+  background: #f4f8fb;
+  color: #64748b;
+  text-align: center;
+}
+
+.balance-header-row .exec-total-lbl {
+  background: #d90429;
+  color: #ffffff;
+}
+.balance-header-row .exec-total-val.balance-white-val {
+  background: #d90429;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 900;
+}
+
+/* 3-Column Footer Grid */
+.exec-bottom-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1.35fr 1fr;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.exec-sub-card {
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 10px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 96px;
+  box-sizing: border-box;
+}
+
+.exec-sub-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #0b223d;
+  margin-bottom: 5px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.sub-header-icon {
+  color: #0b223d;
+}
+
+.exec-sub-field {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.field-lbl {
+  width: 62px;
+  color: #475569;
+  font-weight: 600;
+}
+
+.field-colon {
+  width: 10px;
+  text-align: center;
+  color: #475569;
+}
+
+.field-val {
+  font-weight: 700;
+  color: #0b223d;
+}
+
+.exec-terms-list {
+  margin: 0;
+  padding-left: 14px;
+  font-size: 8.5px;
+  color: #475569;
+  line-height: 1.35;
+}
+
+.exec-terms-list li {
+  margin-bottom: 2px;
+}
+
+.sign-card {
+  background: #f1f5f9;
+  text-align: center;
+}
+
+.exec-sign-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #0b223d;
+}
+
+.exec-sig-svg {
+  width: 80px;
+  height: 28px;
+  margin: 2px auto 0 auto;
+  display: block;
+}
+
+.exec-proprietor-text {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #0b223d;
+  border-top: 1px solid #94a3b8;
+  padding-top: 2px;
+}
+
+.exec-seal-text {
+  font-size: 8px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.8px;
+}
+
+/* =========================================================
+   3. BOTTOM TRUST BADGES & ANGLED CHEVRON FOOTER
+   ========================================================= */
+.exec-footer-wrap {
+  margin-top: auto;
+}
+
+.exec-trust-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 6px 16px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.exec-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.trust-circle-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #0b223d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-head {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #0b223d;
+}
+
+.trust-sub {
+  font-size: 8px;
+  color: #64748b;
+}
+
+.exec-bottom-strip {
+  height: 32px;
+  background: #0b223d;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.strip-left-chevron {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 45px;
+  background: #d90429;
+  clip-path: polygon(0 0, 100% 0, 40% 100%, 0 100%);
+}
+
+.strip-right-chevron {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 45px;
+  background: #d90429;
+  clip-path: polygon(60% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.strip-center-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.strip-dash {
+  height: 1.5px;
+  width: 24px;
+  background: #ffffff;
+  opacity: 0.6;
+  display: inline-block;
+}

@@ -5,6 +5,7 @@ import { Dashboard } from './components/Dashboard';
 import { InvoiceEditor } from './components/invoice/InvoiceEditor';
 import { InvoiceDocument } from './components/invoice/InvoiceDocument';
 import { ModernInvoiceDocument } from './components/invoice/ModernInvoiceDocument';
+import { ExecutiveInvoiceDocument } from './components/invoice/ExecutiveInvoiceDocument';
 import { ConsignmentNoteEditor } from './components/lr/ConsignmentNoteEditor';
 import { ConsignmentNoteDocument } from './components/lr/ConsignmentNoteDocument';
 import { SavedInvoicesModal } from './components/modals/SavedInvoicesModal';
@@ -19,6 +20,7 @@ import { ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
 import './styles/app.css';
 import './styles/invoice.css';
 import './styles/modern-invoice.css';
+import './styles/executive-invoice.css';
 import './styles/bilty.css';
 
 export const App: React.FC = () => {
@@ -58,7 +60,9 @@ export const App: React.FC = () => {
               <div className="a4-page-wrapper">
                 <div style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}>
                   {activeTab === 'invoice' ? (
-                    currentInvoice.template === 'modern' ? (
+                    currentInvoice.template === 'executive' ? (
+                      <ExecutiveInvoiceDocument />
+                    ) : currentInvoice.template === 'modern' ? (
                       <ModernInvoiceDocument />
                     ) : (
                       <InvoiceDocument />

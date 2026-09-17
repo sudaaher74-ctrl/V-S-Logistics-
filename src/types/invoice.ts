@@ -57,7 +57,7 @@ export interface InvoiceData {
   paymentNotes?: string;
   createdAt: string;
   updatedAt: string;
-  template?: 'classic' | 'modern';
+  template?: 'classic' | 'modern' | 'executive';
 }
 
 export type ConsignmentCopyType =

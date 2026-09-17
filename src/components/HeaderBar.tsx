@@ -119,7 +119,7 @@ export const HeaderBar: React.FC = () => {
         {activeTab === 'invoice' && (
           <div className="template-switcher-pill" title="Choose Invoice Template Design">
             <button
-              className={`template-pill-btn ${currentInvoice.template !== 'modern' ? 'active' : ''}`}
+              className={`template-pill-btn ${(!currentInvoice.template || currentInvoice.template === 'classic') ? 'active' : ''}`}
               onClick={() => updateCurrentInvoice({ template: 'classic' })}
               title="Classic Physical Paper Stationery (Red-ruled format)"
             >
@@ -129,10 +129,18 @@ export const HeaderBar: React.FC = () => {
             <button
               className={`template-pill-btn ${currentInvoice.template === 'modern' ? 'active' : ''}`}
               onClick={() => updateCurrentInvoice({ template: 'modern' })}
-              title="Modern Corporate Design (High-end truck banner & slanted graphics)"
+              title="Corporate Modern Design (Top Truck Banner & Cards)"
             >
               <span className="template-pill-emoji">🚀</span>
-              <span>Modern</span>
+              <span>Corporate</span>
+            </button>
+            <button
+              className={`template-pill-btn ${currentInvoice.template === 'executive' ? 'active' : ''}`}
+              onClick={() => updateCurrentInvoice({ template: 'executive' })}
+              title="Executive Sidebar Design (Navy Left Bar & World Map Graphics)"
+            >
+              <span className="template-pill-emoji">💎</span>
+              <span>Executive</span>
             </button>
           </div>
         )}

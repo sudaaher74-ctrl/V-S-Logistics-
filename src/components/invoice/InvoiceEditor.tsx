@@ -75,19 +75,27 @@ export const InvoiceEditor: React.FC = () => {
         <div className="template-bar-toggles">
           <button
             type="button"
-            className={`template-bar-btn ${currentInvoice.template !== 'modern' ? 'active' : ''}`}
+            className={`template-bar-btn ${(!currentInvoice.template || currentInvoice.template === 'classic') ? 'active' : ''}`}
             onClick={() => updateCurrentInvoice({ template: 'classic' })}
             title="Classic physical paper stationery format"
           >
-            📜 Classic Paper
+            📜 Classic
           </button>
           <button
             type="button"
             className={`template-bar-btn ${currentInvoice.template === 'modern' ? 'active' : ''}`}
             onClick={() => updateCurrentInvoice({ template: 'modern' })}
-            title="Modern corporate invoice with truck banner & graphic cards"
+            title="Corporate Modern (Top Truck Banner & Cards)"
           >
-            🚀 Modern Design
+            🚀 Corporate
+          </button>
+          <button
+            type="button"
+            className={`template-bar-btn ${currentInvoice.template === 'executive' ? 'active' : ''}`}
+            onClick={() => updateCurrentInvoice({ template: 'executive' })}
+            title="Executive Sidebar (Navy Left Bar & World Map)"
+          >
+            💎 Executive
           </button>
         </div>
       </div>
