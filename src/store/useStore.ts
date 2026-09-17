@@ -20,6 +20,7 @@ import {
 } from '../utils/defaultData';
 import { getNextBillNumber, getNextLRNumber, extractBillSequenceNumber } from '../utils/billNumberUtils';
 import { supabaseService } from '../utils/supabaseService';
+import { apiService } from '../utils/apiService';
 
 export type AppTab = 'dashboard' | 'invoice' | 'lr';
 export type ViewMode = 'split' | 'preview' | 'editor';
@@ -272,6 +273,7 @@ export const useStore = create<ERPStore>((set, get) => {
 
       saveStorage(STORAGE_KEYS.INVOICES, updated);
       set({ savedInvoices: updated });
+      apiService.saveInvoice(currentInvoice);
       supabaseService.syncInvoice(currentInvoice);
     },
 
@@ -329,6 +331,7 @@ export const useStore = create<ERPStore>((set, get) => {
       const filtered = savedInvoices.filter((inv) => inv.id !== id);
       saveStorage(STORAGE_KEYS.INVOICES, filtered);
       set({ savedInvoices: filtered });
+      apiService.deleteInvoice(id);
       supabaseService.deleteInvoice(id);
     },
 
@@ -401,6 +404,7 @@ export const useStore = create<ERPStore>((set, get) => {
 
       saveStorage(STORAGE_KEYS.LRS, updated);
       set({ savedLRs: updated });
+      apiService.saveLR(currentLR);
       supabaseService.syncConsignmentNote(currentLR);
     },
 
@@ -409,6 +413,7 @@ export const useStore = create<ERPStore>((set, get) => {
       const filtered = savedLRs.filter((lr) => lr.id !== id);
       saveStorage(STORAGE_KEYS.LRS, filtered);
       set({ savedLRs: filtered });
+      apiService.deleteLR(id);
       supabaseService.deleteConsignmentNote(id);
     },
 
@@ -555,6 +560,7 @@ export const useStore = create<ERPStore>((set, get) => {
       }
       saveStorage(STORAGE_KEYS.CUSTOMERS, updated);
       set({ customers: updated });
+      apiService.saveCustomer(cust);
       supabaseService.syncCustomer(cust);
     },
 
@@ -563,6 +569,7 @@ export const useStore = create<ERPStore>((set, get) => {
       const filtered = customers.filter((c) => c.id !== id);
       saveStorage(STORAGE_KEYS.CUSTOMERS, filtered);
       set({ customers: filtered });
+      apiService.deleteCustomer(id);
     },
 
     saveVehicle: (veh) => {
@@ -577,6 +584,7 @@ export const useStore = create<ERPStore>((set, get) => {
       }
       saveStorage(STORAGE_KEYS.VEHICLES, updated);
       set({ vehicles: updated });
+      apiService.saveVehicle(veh);
       supabaseService.syncVehicle(veh);
     },
 
@@ -585,6 +593,7 @@ export const useStore = create<ERPStore>((set, get) => {
       const filtered = vehicles.filter((v) => v.id !== id);
       saveStorage(STORAGE_KEYS.VEHICLES, filtered);
       set({ vehicles: filtered });
+      apiService.deleteVehicle(id);
     },
 
     // TRIP SLIP ACTIONS
@@ -600,6 +609,7 @@ export const useStore = create<ERPStore>((set, get) => {
       }
       saveStorage(STORAGE_KEYS.TRIP_SLIPS, updated);
       set({ tripSlips: updated });
+      apiService.saveTripSlip(slip);
       supabaseService.syncTripSlip(slip);
     },
 
@@ -608,6 +618,7 @@ export const useStore = create<ERPStore>((set, get) => {
       const filtered = tripSlips.filter((t) => t.id !== id);
       saveStorage(STORAGE_KEYS.TRIP_SLIPS, filtered);
       set({ tripSlips: filtered });
+      apiService.deleteTripSlip(id);
     },
 
     // SETTINGS ACTIONS

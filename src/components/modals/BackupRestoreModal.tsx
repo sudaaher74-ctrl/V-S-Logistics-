@@ -1,7 +1,25 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../../store/useStore';
-import { X, Database, Download, Upload, RefreshCw, AlertTriangle, Cloud } from 'lucide-react';
-import { isSupabaseConfigured } from '../../utils/supabase';
+import {
+  X,
+  Database,
+  Download,
+  Upload,
+  RefreshCw,
+  Server,
+  Cloud,
+  CheckCircle,
+  AlertCircle,
+  Key,
+  ExternalLink,
+  Save
+} from 'lucide-react';
+import {
+  getSupabaseCredentials,
+  saveSupabaseCredentials,
+  getSupabaseClient
+} from '../../utils/supabase';
+import { apiService } from '../../utils/apiService';
 
 export const BackupRestoreModal: React.FC = () => {
   const {
@@ -19,6 +37,92 @@ export const BackupRestoreModal: React.FC = () => {
   const [restoreMode, setRestoreMode] = useState<'replace' | 'merge'>('merge');
   const [jsonText, setJsonText] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // SQLite Database status
+  const [sqliteStatus, setSqliteStatus] = useState<{ online: boolean; dbPath?: string }>({ online: false });
+  const [isSyncingSqlite, setIsSyncingSqlite] = useState(false);
+
+  // Supabase Cloud state
+  const creds = getSupabaseCredentials();
+  const [supabaseUrl, setSupabaseUrl] = useState(creds.url);
+  const [supabaseKey, setSupabaseKey] = useState(creds.key);
+  const [cloudStatus, setCloudStatus] = useState<'connected' | 'disconnected' | 'testing'>('disconnected');
+  const [cloudMessage, setCloudMessage] = useState('');
+
+  useEffect(() => {
+    // Check local SQLite backend
+    apiService.checkStatus().then((res) => {
+      setSqliteStatus({ online: res.online, dbPath: res.dbPath });
+    });
+
+    // Check Supabase if configured
+    if (creds.url && creds.key) {
+      testCloudConnection(creds.url, creds.key);
+    }
+  }, []);
+
+  const testCloudConnection = async (url: string, key: string) => {
+    if (!url || !key) {
+      setCloudStatus('disconnected');
+      return;
+    }
+    setCloudStatus('testing');
+    try {
+      const client = getSupabaseClient();
+      if (!client) throw new Error('Could not create Supabase client');
+
+      const { error } = await client.from('invoices').select('id').limit(1);
+      if (error) {
+        setCloudStatus('disconnected');
+        setCloudMessage(error.message || 'Connection failed');
+      } else {
+        setCloudStatus('connected');
+        setCloudMessage('Connected successfully to free PostgreSQL database!');
+      }
+    } catch (err: any) {
+      setCloudStatus('disconnected');
+      setCloudMessage(err.message || 'Connection failed');
+    }
+  };
+
+  const handleSaveCloudCredentials = () => {
+    if (!supabaseUrl.trim() || !supabaseKey.trim()) {
+      alert('Please provide both Supabase Project URL and Anon API Key.');
+      return;
+    }
+    saveSupabaseCredentials(supabaseUrl, supabaseKey);
+    testCloudConnection(supabaseUrl, supabaseKey);
+    alert('Supabase credentials saved!');
+  };
+
+  // Sync everything into local SQLite database
+  const handleSyncToSQLite = async () => {
+    setIsSyncingSqlite(true);
+    try {
+      let count = 0;
+      for (const inv of savedInvoices) {
+        await apiService.saveInvoice(inv);
+        count++;
+      }
+      for (const lr of savedLRs) {
+        await apiService.saveLR(lr);
+      }
+      for (const c of customers) {
+        await apiService.saveCustomer(c);
+      }
+      for (const v of vehicles) {
+        await apiService.saveVehicle(v);
+      }
+      for (const s of tripSlips) {
+        await apiService.saveTripSlip(s);
+      }
+      alert(`Successfully saved ${count} invoices, ${savedLRs.length} LRs, and directory to local SQLite database (data/vs_logistics.db)!`);
+    } catch (err: any) {
+      alert(`Error saving to SQLite: ${err.message}`);
+    } finally {
+      setIsSyncingSqlite(false);
+    }
+  };
 
   const handleExportBackup = () => {
     const json = exportBackupJSON();
@@ -74,102 +178,227 @@ export const BackupRestoreModal: React.FC = () => {
 
   return (
     <div className="modal-overlay" onClick={() => setActiveModal(null)}>
-      <div className="modal-content" style={{ maxWidth: '720px' }} onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content" style={{ maxWidth: '820px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title">
             <Database size={18} color="#38bdf8" />
-            <span>Database Backup, Restore & Cloud Sync</span>
+            <span>Database Management & Cloud Sync</span>
           </div>
           <button className="modal-close-btn" onClick={() => setActiveModal(null)}>
             <X size={18} />
           </button>
         </div>
 
-        <div className="modal-body">
-          {/* Cloud Sync Status Banner */}
+        <div className="modal-body" style={{ maxHeight: '75vh', overflowY: 'auto' }}>
+          {/* OPTION 1: BUILT-IN LOCAL SQLITE DATABASE (100% FREE FOREVER) */}
           <div
             style={{
-              padding: '12px 16px',
+              padding: '16px',
               borderRadius: '8px',
-              background: isSupabaseConfigured ? 'rgba(16, 185, 129, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-              border: `1px solid ${isSupabaseConfigured ? '#10b981' : '#3b82f6'}`,
-              marginBottom: '20px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              background: '#141f32',
+              border: '1px solid var(--border-color)',
+              marginBottom: '20px'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Cloud size={20} color={isSupabaseConfigured ? '#10b981' : '#3b82f6'} />
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '13px', color: '#f8fafc' }}>
-                  {isSupabaseConfigured
-                    ? 'Cloud Synchronization: CONNECTED (Supabase)'
-                    : 'Offline Storage: ACTIVE (Local Cache)'}
-                </div>
-                <div style={{ fontSize: '11px', color: '#94a3b8' }}>
-                  {isSupabaseConfigured
-                    ? 'Invoices and consignment notes are continuously synced to PostgreSQL.'
-                    : 'Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env to enable multi-device sync.'}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Server size={22} color={sqliteStatus.online ? '#10b981' : '#f59e0b'} />
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '14px', color: '#f8fafc' }}>
+                    1. Built-in Local SQLite Database (100% Free Forever)
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    {sqliteStatus.online
+                      ? `Active: Storing all data on your computer in data/vs_logistics.db`
+                      : `Server starting on http://localhost:5000`}
+                  </div>
                 </div>
               </div>
+
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  padding: '3px 10px',
+                  borderRadius: '9999px',
+                  background: sqliteStatus.online ? '#064e3b' : '#78350f',
+                  color: '#ffffff'
+                }}
+              >
+                {sqliteStatus.online ? '● Online (SQLite)' : 'Offline'}
+              </span>
+            </div>
+
+            <div style={{ marginTop: '12px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <button
+                className="btn btn-primary"
+                style={{ fontSize: '12px' }}
+                disabled={isSyncingSqlite}
+                onClick={handleSyncToSQLite}
+              >
+                <Save size={13} /> {isSyncingSqlite ? 'Syncing...' : 'Save All Current Records to SQLite Database'}
+              </button>
+              <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+                Zero signup required &bull; 100% offline & persistent
+              </span>
             </div>
           </div>
 
-          {/* Stats on Current Database */}
+          {/* OPTION 2: FREE CLOUD DATABASE (SUPABASE POSTGRESQL) */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '10px',
-              marginBottom: '20px',
-              textAlign: 'center'
+              padding: '16px',
+              borderRadius: '8px',
+              background: '#141f32',
+              border: '1px solid var(--border-color)',
+              marginBottom: '20px'
             }}
           >
-            <div style={{ background: '#141f32', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontWeight: 800, fontSize: '16px', color: '#38bdf8' }}>{savedInvoices.length}</div>
-              <div style={{ fontSize: '11px', color: '#94a3b8' }}>Invoices</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Cloud size={22} color={cloudStatus === 'connected' ? '#10b981' : '#38bdf8'} />
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '14px', color: '#f8fafc' }}>
+                    2. Free Cloud Database (Supabase PostgreSQL)
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    Access your transport billing from any mobile, tablet, or laptop.
+                  </div>
+                </div>
+              </div>
+
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  padding: '3px 10px',
+                  borderRadius: '9999px',
+                  background:
+                    cloudStatus === 'connected'
+                      ? '#064e3b'
+                      : cloudStatus === 'testing'
+                      ? '#1e3a8a'
+                      : '#334155',
+                  color: '#ffffff'
+                }}
+              >
+                {cloudStatus === 'connected' ? '● Connected' : cloudStatus === 'testing' ? 'Testing...' : 'Not Connected'}
+              </span>
             </div>
-            <div style={{ background: '#141f32', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontWeight: 800, fontSize: '16px', color: '#ef4444' }}>{savedLRs.length}</div>
-              <div style={{ fontSize: '11px', color: '#94a3b8' }}>e-LR Bilty</div>
+
+            {/* Quick 3-Step Setup Instructions */}
+            <div
+              style={{
+                background: '#0b1322',
+                padding: '10px 14px',
+                borderRadius: '6px',
+                fontSize: '12px',
+                color: '#cbd5e1',
+                lineHeight: 1.5,
+                marginBottom: '12px'
+              }}
+            >
+              <b>How to get your 100% Free Cloud Database in 2 minutes:</b>
+              <ol style={{ paddingLeft: '18px', marginTop: '4px' }}>
+                <li>
+                  Go to{' '}
+                  <a
+                    href="https://supabase.com"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ color: '#38bdf8', textDecoration: 'underline' }}
+                  >
+                    supabase.com <ExternalLink size={11} style={{ display: 'inline' }} />
+                  </a>{' '}
+                  and click <b>"Start your project"</b> (Free forever, no credit card required).
+                </li>
+                <li>
+                  Create a new project (e.g. <code>vs-logistics</code>), then open <b>SQL Editor</b> and paste the contents of{' '}
+                  <b>supabase_schema.sql</b>.
+                </li>
+                <li>
+                  Go to <b>Project Settings → API</b> and paste your <b>Project URL</b> and <b>anon public key</b> below:
+                </li>
+              </ol>
             </div>
-            <div style={{ background: '#141f32', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontWeight: 800, fontSize: '16px', color: '#10b981' }}>{customers.length}</div>
-              <div style={{ fontSize: '11px', color: '#94a3b8' }}>Clients</div>
+
+            <div className="form-row" style={{ marginBottom: '10px' }}>
+              <div className="form-group" style={{ flex: 1.2 }}>
+                <label className="form-label">Supabase Project URL</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="https://your-project-id.supabase.co"
+                  value={supabaseUrl}
+                  onChange={(e) => setSupabaseUrl(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group" style={{ flex: 1.5 }}>
+                <label className="form-label">Supabase Anon Public Key</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  value={supabaseKey}
+                  onChange={(e) => setSupabaseKey(e.target.value)}
+                />
+              </div>
             </div>
-            <div style={{ background: '#141f32', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)' }}>
-              <div style={{ fontWeight: 800, fontSize: '16px', color: '#f59e0b' }}>{vehicles.length}</div>
-              <div style={{ fontSize: '11px', color: '#94a3b8' }}>Vehicles</div>
+
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <button className="btn btn-primary" onClick={handleSaveCloudCredentials}>
+                <Key size={14} /> Save & Connect Cloud Database
+              </button>
+              {supabaseUrl && (
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => testCloudConnection(supabaseUrl, supabaseKey)}
+                >
+                  <RefreshCw size={13} /> Test Connection
+                </button>
+              )}
+              {cloudMessage && (
+                <span
+                  style={{
+                    fontSize: '11px',
+                    color: cloudStatus === 'connected' ? '#34d399' : '#f87171',
+                    marginLeft: '8px'
+                  }}
+                >
+                  {cloudMessage}
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Section 1: Full System Export */}
-          <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '16px' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: '#f8fafc' }}>
-              1. Full Database Export (JSON Backup)
+          {/* SECTION 3: JSON BACKUP & RESTORE */}
+          <div
+            style={{
+              padding: '16px',
+              borderRadius: '8px',
+              background: '#141f32',
+              border: '1px solid var(--border-color)'
+            }}
+          >
+            <h4 style={{ fontSize: '13px', fontWeight: 800, marginBottom: '6px', color: '#f8fafc' }}>
+              3. Offline File Backup (JSON Export / Restore)
             </h4>
-            <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '10px' }}>
-              Generates a single self-contained JSON backup containing all bills, consignment notes, directory masters, and trip slips.
+            <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '12px' }}>
+              Export a complete timestamped backup file to save on your USB drive or computer.
             </p>
-            <button className="btn btn-primary" onClick={handleExportBackup}>
-              <Download size={14} /> Download System Backup JSON
-            </button>
-          </div>
 
-          {/* Section 2: Restore */}
-          <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '16px', marginBottom: '16px' }}>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: '#f8fafc' }}>
-              2. Restore from JSON Backup
-            </h4>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '14px' }}>
+              <button className="btn btn-secondary" onClick={handleExportBackup}>
+                <Download size={14} /> Download Backup (.json)
+              </button>
 
-            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '10px' }}>
               <button
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <Upload size={14} /> Select Backup File
+                <Upload size={14} /> Restore from File
               </button>
               <input
                 ref={fileInputRef}
@@ -179,58 +408,25 @@ export const BackupRestoreModal: React.FC = () => {
                 onChange={handleFileUpload}
               />
 
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', fontSize: '12px' }}>
-                <span style={{ color: '#94a3b8' }}>Restore Mode:</span>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name="restoreMode"
-                    value="merge"
-                    checked={restoreMode === 'merge'}
-                    onChange={() => setRestoreMode('merge')}
-                  />
-                  Merge Unique
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
-                  <input
-                    type="radio"
-                    name="restoreMode"
-                    value="replace"
-                    checked={restoreMode === 'replace'}
-                    onChange={() => setRestoreMode('replace')}
-                  />
-                  Replace All
-                </label>
-              </div>
-            </div>
-
-            <textarea
-              className="form-textarea"
-              rows={4}
-              placeholder="Or paste backup JSON text here..."
-              value={jsonText}
-              onChange={(e) => setJsonText(e.target.value)}
-              style={{ fontFamily: 'monospace', fontSize: '11px' }}
-            />
-
-            <div style={{ marginTop: '10px' }}>
-              <button className="btn btn-success" onClick={handlePerformRestore}>
-                <Upload size={14} /> Confirm & Restore
+              <button className="btn btn-secondary" style={{ color: '#ef4444' }} onClick={handleResetToDemo}>
+                <RefreshCw size={13} /> Reset to Demo
               </button>
             </div>
-          </div>
 
-          {/* Section 3: Reset to Demo */}
-          <div>
-            <h4 style={{ fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: '#f87171' }}>
-              3. Reset to Demo Records
-            </h4>
-            <p style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '10px' }}>
-              Restores authentic V S LOGISTICS sample transport data from the physical paper bill.
-            </p>
-            <button className="btn btn-secondary" style={{ color: '#ef4444' }} onClick={handleResetToDemo}>
-              <RefreshCw size={14} /> Reset to Demo Data
-            </button>
+            {jsonText && (
+              <div style={{ marginTop: '10px' }}>
+                <textarea
+                  className="form-textarea"
+                  rows={3}
+                  value={jsonText}
+                  onChange={(e) => setJsonText(e.target.value)}
+                  style={{ fontFamily: 'monospace', fontSize: '11px', marginBottom: '8px' }}
+                />
+                <button className="btn btn-success" onClick={handlePerformRestore}>
+                  <Upload size={14} /> Confirm & Apply Restore
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
