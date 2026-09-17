@@ -1,0 +1,268 @@
+/* =========================================================
+   GOODS CONSIGNMENT NOTE (e-LR / BILTY) CSS
+   Authentic Indian Transport LR Stationery layout
+   ========================================================= */
+
+.bilty-page {
+  width: 794px;
+  min-height: 1123px;
+  background: #ffffff;
+  padding: 16px 20px 20px 20px;
+  box-sizing: border-box;
+  font-family: 'Times New Roman', Times, serif;
+  color: #111111;
+  border: 2px solid #c00000;
+  position: relative;
+}
+
+/* Watermark Copy Badge */
+.bilty-copy-badge {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  border: 2px solid #c00000;
+  color: #c00000;
+  padding: 4px 14px;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: #fffafa;
+  border-radius: 4px;
+  box-shadow: 2px 2px 0px rgba(192, 0, 0, 0.15);
+}
+
+.bilty-watermark-center {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-35deg);
+  font-size: 64px;
+  font-weight: 900;
+  color: rgba(192, 0, 0, 0.08);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 4px;
+  border: 4px dashed rgba(192, 0, 0, 0.12);
+  padding: 10px 40px;
+  border-radius: 12px;
+}
+
+/* Header & Transporter Details */
+.bilty-header-bar {
+  text-align: center;
+  border-bottom: 2px solid #c00000;
+  padding-bottom: 6px;
+  margin-top: 4px;
+}
+
+.bilty-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: #c00000;
+  letter-spacing: 1.5px;
+  margin: 0;
+}
+
+.bilty-company-name {
+  font-size: 32px;
+  font-weight: 900;
+  color: #c00000;
+  margin: 2px 0;
+  letter-spacing: 1px;
+}
+
+.bilty-subtitle {
+  font-size: 12px;
+  font-weight: bold;
+  color: #c00000;
+  margin: 2px 0;
+}
+
+.bilty-office-address {
+  font-size: 11px;
+  font-weight: 600;
+  color: #111111;
+  margin: 2px 0;
+}
+
+/* Identification Grid (LR No, Date, Vehicle, Branch) */
+.bilty-id-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1.2fr 1.5fr;
+  border-bottom: 1.5px solid #c00000;
+  background: #fff8f8;
+  font-size: 13px;
+  padding: 6px 8px;
+}
+
+.bilty-id-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.bilty-id-label {
+  font-weight: bold;
+  color: #c00000;
+}
+
+.bilty-id-val {
+  font-weight: 900;
+  color: #111111;
+}
+
+.bilty-id-val.lr-number {
+  font-size: 16px;
+  color: #c00000;
+}
+
+/* Consignor & Consignee Box */
+.bilty-parties-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1.5px solid #c00000;
+}
+
+.bilty-party-col {
+  padding: 8px 10px;
+  font-size: 12.5px;
+}
+
+.bilty-party-col:first-child {
+  border-right: 1.5px solid #c00000;
+}
+
+.bilty-party-title {
+  font-size: 13px;
+  font-weight: 900;
+  color: #c00000;
+  border-bottom: 1px solid #f0a0a0;
+  padding-bottom: 3px;
+  margin-bottom: 5px;
+}
+
+.bilty-party-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #003399;
+  margin-bottom: 3px;
+}
+
+.bilty-party-line {
+  margin: 2px 0;
+  line-height: 1.3;
+}
+
+/* Cargo & Packages Grid */
+.bilty-cargo-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-bottom: 1.5px solid #c00000;
+}
+
+.bilty-cargo-table th {
+  background: #fff0f0;
+  color: #c00000;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 5px 6px;
+  border-right: 1px solid #c00000;
+  border-bottom: 1px solid #c00000;
+  text-align: center;
+}
+
+.bilty-cargo-table th:last-child {
+  border-right: none;
+}
+
+.bilty-cargo-table td {
+  border-right: 1px solid #c00000;
+  border-bottom: 1px solid #f0a0a0;
+  padding: 6px 8px;
+  font-size: 13px;
+  vertical-align: top;
+}
+
+.bilty-cargo-table td:last-child {
+  border-right: none;
+}
+
+/* Freight Breakdown & Compliance Grid */
+.bilty-bottom-split {
+  display: grid;
+  grid-template-columns: 1.5fr 1.1fr;
+  border-bottom: 1.5px solid #c00000;
+}
+
+.bilty-docs-section {
+  padding: 8px 10px;
+  border-right: 1.5px solid #c00000;
+  font-size: 12px;
+}
+
+.bilty-freight-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.bilty-freight-table td {
+  padding: 3px 6px;
+  border-bottom: 1px solid #f0a0a0;
+}
+
+.bilty-freight-table tr:last-child td {
+  border-bottom: none;
+  font-weight: 900;
+  font-size: 14px;
+  background: #fff0f0;
+  color: #c00000;
+}
+
+.freight-type-pills {
+  display: flex;
+  gap: 12px;
+  padding: 5px 8px;
+  background: #fff8f8;
+  border-bottom: 1px solid #c00000;
+  font-weight: bold;
+  font-size: 12.5px;
+}
+
+.freight-pill-active {
+  color: #c00000;
+  text-decoration: underline;
+}
+
+/* Notice & Signature footer */
+.bilty-footer-bar {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  padding: 8px 10px;
+  font-size: 11px;
+}
+
+.bilty-legal-notice {
+  color: #444444;
+  line-height: 1.35;
+}
+
+.bilty-sig-box {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.at-owners-risk-badge {
+  display: inline-block;
+  background: #c00000;
+  color: #ffffff;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  border-radius: 2px;
+  margin-top: 4px;
+}
