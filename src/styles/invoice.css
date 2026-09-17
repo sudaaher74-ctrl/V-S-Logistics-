@@ -28,7 +28,7 @@
 
 .a4-page {
   width: 794px; /* A4 at 96 DPI: 210mm */
-  min-height: 1123px; /* A4 at 96 DPI: 297mm */
+  height: 1123px; /* Exact A4 at 96 DPI: 297mm */
   background: var(--bill-bg);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   box-sizing: border-box;
@@ -38,6 +38,9 @@
   color: var(--ink-black);
   transform-origin: top center;
   transition: transform 0.15s ease-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* Top Auspicious Mantras Bar */
@@ -174,12 +177,17 @@
 .transport-table-container {
   margin-top: 6px;
   border: 1.5px solid var(--stamp-red);
+  border-bottom: none;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .transport-table {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+  flex: 1;
 }
 
 .transport-table th {
@@ -191,6 +199,7 @@
   color: var(--stamp-red);
   text-align: center;
   background: #fffafa;
+  height: 28px;
 }
 
 .transport-table th:last-child {
@@ -200,11 +209,11 @@
 .transport-table td {
   border-right: 1px solid var(--stamp-red);
   border-bottom: 1px solid #f0a0a0;
-  padding: 5px 6px;
+  padding: 4px 6px;
   font-size: 13.5px;
   line-height: 1.3;
-  vertical-align: top;
-  min-height: 28px;
+  vertical-align: middle;
+  height: 31px;
   color: var(--ink-black);
 }
 
@@ -213,8 +222,8 @@
 }
 
 .transport-table tr.filler-row td {
-  height: 26px;
-  padding: 2px;
+  height: 31px;
+  padding: 0;
 }
 
 .col-date { width: 85px; text-align: center; }

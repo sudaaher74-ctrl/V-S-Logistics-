@@ -17,8 +17,8 @@ export const InvoiceDocument: React.FC<InvoiceDocumentProps> = ({ interactive = 
   const amountForWords = balance > 0 ? balance : total;
   const wordsText = currentInvoice.customAmountInWords || toTitleCase(numberToIndianWords(amountForWords));
 
-  // Ensure minimum 12 rows to preserve physical paper height
-  const MIN_ROWS = 12;
+  // Ensure minimum 18 rows to preserve physical paper height matching the real bill
+  const MIN_ROWS = 18;
   const activeItemsCount = currentInvoice.items.length;
   const fillerRowsCount = Math.max(0, MIN_ROWS - activeItemsCount);
   const fillerRows = Array.from({ length: fillerRowsCount });

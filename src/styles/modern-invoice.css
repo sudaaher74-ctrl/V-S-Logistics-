@@ -7,6 +7,11 @@
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
   color: #1e293b;
   padding: 36px 40px !important;
+  height: 1123px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  box-sizing: border-box !important;
 }
 
 /* Modern Top Banner */
