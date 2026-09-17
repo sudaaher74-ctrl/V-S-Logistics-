@@ -6,6 +6,7 @@ import { InvoiceEditor } from './components/invoice/InvoiceEditor';
 import { InvoiceDocument } from './components/invoice/InvoiceDocument';
 import { ModernInvoiceDocument } from './components/invoice/ModernInvoiceDocument';
 import { ExecutiveInvoiceDocument } from './components/invoice/ExecutiveInvoiceDocument';
+import { AllBillsView } from './components/invoice/AllBillsView';
 import { ConsignmentNoteEditor } from './components/lr/ConsignmentNoteEditor';
 import { ConsignmentNoteDocument } from './components/lr/ConsignmentNoteDocument';
 import { SavedInvoicesModal } from './components/modals/SavedInvoicesModal';
@@ -30,7 +31,9 @@ export const App: React.FC = () => {
     zoom,
     setZoom,
     currentInvoice,
-    activeModal
+    activeModal,
+    toastMessage,
+    setToastMessage
   } = useStore();
 
   const handleZoomIn = () => setZoom((z) => Math.min(1.5, z + 0.1));
@@ -45,6 +48,8 @@ export const App: React.FC = () => {
       {/* Main Content Area */}
       {activeTab === 'dashboard' ? (
         <Dashboard />
+      ) : activeTab === 'all-bills' ? (
+        <AllBillsView />
       ) : (
         <div className="workspace-container">
           {/* Left Form Editor */}
@@ -99,6 +104,14 @@ export const App: React.FC = () => {
       {activeModal === 'party-ledger' && <PartyLedgerModal />}
       {activeModal === 'payment' && <PaymentRecordModal />}
       {activeModal === 'backup-restore' && <BackupRestoreModal />}
+
+      {/* Global Toast Notification */}
+      {toastMessage && (
+        <div className="global-toast-notification">
+          <span>{toastMessage}</span>
+          <button className="toast-close-btn" onClick={() => setToastMessage(null)}>×</button>
+        </div>
+      )}
     </div>
   );
 };

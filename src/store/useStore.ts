@@ -22,7 +22,7 @@ import { getNextBillNumber, getNextLRNumber, extractBillSequenceNumber } from '.
 import { supabaseService } from '../utils/supabaseService';
 import { apiService } from '../utils/apiService';
 
-export type AppTab = 'dashboard' | 'invoice' | 'lr';
+export type AppTab = 'dashboard' | 'invoice' | 'all-bills' | 'lr';
 export type ViewMode = 'split' | 'preview' | 'editor';
 export type ModalType =
   | null
@@ -41,6 +41,7 @@ interface ERPStore {
   zoom: number;
   activeModal: ModalType;
   selectedPaymentInvoiceId: string | null;
+  toastMessage: string | null;
 
   // Active Document State
   currentInvoice: InvoiceData;
@@ -63,6 +64,7 @@ interface ERPStore {
   setZoom: (zoom: number | ((prev: number) => number)) => void;
   setActiveModal: (modal: ModalType) => void;
   setSelectedPaymentInvoiceId: (id: string | null) => void;
+  setToastMessage: (msg: string | null) => void;
 
   // Invoice Actions
   setCurrentInvoice: (inv: InvoiceData) => void;
@@ -162,6 +164,7 @@ export const useStore = create<ERPStore>((set, get) => {
     zoom: 1.0,
     activeModal: null,
     selectedPaymentInvoiceId: null,
+    toastMessage: null,
 
     companyProfile: initialCompany,
     bankDetails: initialBank,
@@ -182,29 +185,55 @@ export const useStore = create<ERPStore>((set, get) => {
       })),
     setActiveModal: (activeModal) => set({ activeModal }),
     setSelectedPaymentInvoiceId: (selectedPaymentInvoiceId) => set({ selectedPaymentInvoiceId }),
+    setToastMessage: (toastMessage) => set({ toastMessage }),
 
     // INVOICE ACTIONS
     setCurrentInvoice: (currentInvoice) => set({ currentInvoice }),
 
     updateCurrentInvoice: (partial) =>
-      set((state) => ({
-        currentInvoice: {
+      set((state) => {
+        const nextInv = {
           ...state.currentInvoice,
           ...partial,
           updatedAt: new Date().toISOString()
+        };
+        const existingIdx = state.savedInvoices.findIndex((inv) => inv.id === nextInv.id);
+        let updatedSaved = state.savedInvoices;
+        if (existingIdx >= 0) {
+          updatedSaved = [...state.savedInvoices];
+          updatedSaved[existingIdx] = nextInv;
+          saveStorage(STORAGE_KEYS.INVOICES, updatedSaved);
+          apiService.saveInvoice(nextInv);
         }
-      })),
+        return {
+          currentInvoice: nextInv,
+          savedInvoices: updatedSaved
+        };
+      }),
 
     updateLineItem: (id, partial) =>
-      set((state) => ({
-        currentInvoice: {
+      set((state) => {
+        const nextItems = state.currentInvoice.items.map((item) =>
+          item.id === id ? { ...item, ...partial } : item
+        );
+        const nextInv = {
           ...state.currentInvoice,
-          items: state.currentInvoice.items.map((item) =>
-            item.id === id ? { ...item, ...partial } : item
-          ),
+          items: nextItems,
           updatedAt: new Date().toISOString()
+        };
+        const existingIdx = state.savedInvoices.findIndex((inv) => inv.id === nextInv.id);
+        let updatedSaved = state.savedInvoices;
+        if (existingIdx >= 0) {
+          updatedSaved = [...state.savedInvoices];
+          updatedSaved[existingIdx] = nextInv;
+          saveStorage(STORAGE_KEYS.INVOICES, updatedSaved);
+          apiService.saveInvoice(nextInv);
         }
-      })),
+        return {
+          currentInvoice: nextInv,
+          savedInvoices: updatedSaved
+        };
+      }),
 
     addLineItem: (item = {}) =>
       set((state) => {
@@ -221,25 +250,48 @@ export const useStore = create<ERPStore>((set, get) => {
           amount: '',
           ...item
         };
+        const nextInv = {
+          ...state.currentInvoice,
+          items: [...state.currentInvoice.items, newItem],
+          updatedAt: new Date().toISOString()
+        };
+        const existingIdx = state.savedInvoices.findIndex((inv) => inv.id === nextInv.id);
+        let updatedSaved = state.savedInvoices;
+        if (existingIdx >= 0) {
+          updatedSaved = [...state.savedInvoices];
+          updatedSaved[existingIdx] = nextInv;
+          saveStorage(STORAGE_KEYS.INVOICES, updatedSaved);
+          apiService.saveInvoice(nextInv);
+        }
         return {
-          currentInvoice: {
-            ...state.currentInvoice,
-            items: [...state.currentInvoice.items, newItem],
-            updatedAt: new Date().toISOString()
-          }
+          currentInvoice: nextInv,
+          savedInvoices: updatedSaved
         };
       }),
 
     removeLineItem: (id) =>
-      set((state) => ({
-        currentInvoice: {
+      set((state) => {
+        const nextItems = state.currentInvoice.items
+          .filter((item) => item.id !== id)
+          .map((item, idx) => ({ ...item, sn: String(idx + 1) }));
+        const nextInv = {
           ...state.currentInvoice,
-          items: state.currentInvoice.items
-            .filter((item) => item.id !== id)
-            .map((item, idx) => ({ ...item, sn: String(idx + 1) })),
+          items: nextItems,
           updatedAt: new Date().toISOString()
+        };
+        const existingIdx = state.savedInvoices.findIndex((inv) => inv.id === nextInv.id);
+        let updatedSaved = state.savedInvoices;
+        if (existingIdx >= 0) {
+          updatedSaved = [...state.savedInvoices];
+          updatedSaved[existingIdx] = nextInv;
+          saveStorage(STORAGE_KEYS.INVOICES, updatedSaved);
+          apiService.saveInvoice(nextInv);
         }
-      })),
+        return {
+          currentInvoice: nextInv,
+          savedInvoices: updatedSaved
+        };
+      }),
 
     cloneLineItem: (id) =>
       set((state) => {
@@ -250,12 +302,22 @@ export const useStore = create<ERPStore>((set, get) => {
           id: `item-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
           sn: String(state.currentInvoice.items.length + 1)
         };
+        const nextInv = {
+          ...state.currentInvoice,
+          items: [...state.currentInvoice.items, cloned],
+          updatedAt: new Date().toISOString()
+        };
+        const existingIdx = state.savedInvoices.findIndex((inv) => inv.id === nextInv.id);
+        let updatedSaved = state.savedInvoices;
+        if (existingIdx >= 0) {
+          updatedSaved = [...state.savedInvoices];
+          updatedSaved[existingIdx] = nextInv;
+          saveStorage(STORAGE_KEYS.INVOICES, updatedSaved);
+          apiService.saveInvoice(nextInv);
+        }
         return {
-          currentInvoice: {
-            ...state.currentInvoice,
-            items: [...state.currentInvoice.items, cloned],
-            updatedAt: new Date().toISOString()
-          }
+          currentInvoice: nextInv,
+          savedInvoices: updatedSaved
         };
       }),
 
@@ -272,7 +334,14 @@ export const useStore = create<ERPStore>((set, get) => {
       }
 
       saveStorage(STORAGE_KEYS.INVOICES, updated);
-      set({ savedInvoices: updated });
+      set({
+        savedInvoices: updated,
+        toastMessage: `✅ Bill #${currentInvoice.billNo} saved to database! You can view or edit it anytime.`
+      });
+      setTimeout(() => {
+        set((state) => (state.toastMessage?.includes(currentInvoice.billNo) ? { toastMessage: null } : {}));
+      }, 3500);
+
       apiService.saveInvoice(currentInvoice);
       supabaseService.syncInvoice(currentInvoice);
     },

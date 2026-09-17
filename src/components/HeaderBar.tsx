@@ -102,9 +102,20 @@ export const HeaderBar: React.FC = () => {
           <button
             className={`doc-tab-btn ${activeTab === 'invoice' ? 'active' : ''}`}
             onClick={() => setActiveTab('invoice')}
+            title="Create or Edit Tax Invoice"
           >
             <FileText size={15} />
-            Tax Invoice
+            {savedInvoices.some((i) => i.id === currentInvoice.id)
+              ? `Edit #${currentInvoice.billNo}`
+              : 'Tax Invoice'}
+          </button>
+          <button
+            className={`doc-tab-btn ${activeTab === 'all-bills' ? 'active' : ''}`}
+            onClick={() => setActiveTab('all-bills')}
+            title="View, Search & Edit All Saved Invoices"
+          >
+            <FolderOpen size={15} />
+            All Bills ({savedInvoices.length})
           </button>
           <button
             className={`doc-tab-btn ${activeTab === 'lr' ? 'active' : ''}`}
@@ -148,7 +159,7 @@ export const HeaderBar: React.FC = () => {
 
       {/* Action Controls */}
       <div className="header-actions">
-        {activeTab !== 'dashboard' && (
+        {activeTab !== 'dashboard' && activeTab !== 'all-bills' && (
           <>
             {/* New Button */}
             {activeTab === 'invoice' ? (

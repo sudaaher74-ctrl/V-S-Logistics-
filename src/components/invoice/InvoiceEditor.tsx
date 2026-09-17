@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { Plus, Trash2, Copy, UserCheck, Truck, Layout, Shield } from 'lucide-react';
+import { Plus, Trash2, Copy, UserCheck, Truck, Layout, Shield, ListOrdered } from 'lucide-react';
 import { LineItem } from '../../types/invoice';
 
 export const InvoiceEditor: React.FC = () => {
@@ -15,13 +15,17 @@ export const InvoiceEditor: React.FC = () => {
     cloneLineItem,
     customers,
     vehicles,
+    savedInvoices,
     saveCustomer,
     saveVehicle,
     companyProfile,
     updateCompanyProfile,
     bankDetails,
-    updateBankDetails
+    updateBankDetails,
+    setActiveTab
   } = useStore();
+
+  const isExistingBill = savedInvoices.some((inv) => inv.id === currentInvoice.id);
 
   // Route presets
   const routePresets = [
@@ -69,6 +73,26 @@ export const InvoiceEditor: React.FC = () => {
 
   return (
     <div className="editor-sidebar no-print">
+      {/* Editing Status Banner */}
+      <div className="editing-status-bar">
+        <span className="esb-label">
+          {isExistingBill ? `✏️ Editing: Bill #${currentInvoice.billNo}` : `📄 New Bill #${currentInvoice.billNo}`}
+        </span>
+        {isExistingBill ? (
+          <span className="esb-saved-tag">● AUTO-SAVED</span>
+        ) : (
+          <span className="esb-new-tag">UNSAVED</span>
+        )}
+        <button
+          className="esb-view-all-btn"
+          onClick={() => setActiveTab('all-bills')}
+          title="View all saved bills"
+        >
+          <ListOrdered size={12} style={{ display: 'inline', marginRight: 4 }} />
+          All Bills
+        </button>
+      </div>
+
       {/* Design Template Switcher */}
       <div className="template-editor-bar">
         <span className="template-bar-label">INVOICE DESIGN:</span>
