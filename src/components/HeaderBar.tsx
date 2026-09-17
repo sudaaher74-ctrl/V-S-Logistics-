@@ -35,6 +35,7 @@ export const HeaderBar: React.FC = () => {
     viewMode,
     setViewMode,
     currentInvoice,
+    updateCurrentInvoice,
     currentLR,
     savedInvoices,
     savedLRs,
@@ -113,6 +114,28 @@ export const HeaderBar: React.FC = () => {
             e-LR (Bilty)
           </button>
         </div>
+
+        {/* Invoice Design Template Switcher */}
+        {activeTab === 'invoice' && (
+          <div className="template-switcher-pill" title="Choose Invoice Template Design">
+            <button
+              className={`template-pill-btn ${currentInvoice.template !== 'modern' ? 'active' : ''}`}
+              onClick={() => updateCurrentInvoice({ template: 'classic' })}
+              title="Classic Physical Paper Stationery (Red-ruled format)"
+            >
+              <span className="template-pill-emoji">📜</span>
+              <span>Classic</span>
+            </button>
+            <button
+              className={`template-pill-btn ${currentInvoice.template === 'modern' ? 'active' : ''}`}
+              onClick={() => updateCurrentInvoice({ template: 'modern' })}
+              title="Modern Corporate Design (High-end truck banner & slanted graphics)"
+            >
+              <span className="template-pill-emoji">🚀</span>
+              <span>Modern</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Action Controls */}

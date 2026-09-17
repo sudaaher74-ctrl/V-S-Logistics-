@@ -69,6 +69,29 @@ export const InvoiceEditor: React.FC = () => {
 
   return (
     <div className="editor-sidebar no-print">
+      {/* Design Template Switcher */}
+      <div className="template-editor-bar">
+        <span className="template-bar-label">INVOICE DESIGN:</span>
+        <div className="template-bar-toggles">
+          <button
+            type="button"
+            className={`template-bar-btn ${currentInvoice.template !== 'modern' ? 'active' : ''}`}
+            onClick={() => updateCurrentInvoice({ template: 'classic' })}
+            title="Classic physical paper stationery format"
+          >
+            📜 Classic Paper
+          </button>
+          <button
+            type="button"
+            className={`template-bar-btn ${currentInvoice.template === 'modern' ? 'active' : ''}`}
+            onClick={() => updateCurrentInvoice({ template: 'modern' })}
+            title="Modern corporate invoice with truck banner & graphic cards"
+          >
+            🚀 Modern Design
+          </button>
+        </div>
+      </div>
+
       {/* Sub Tabs */}
       <div className="sidebar-tabs">
         <button
